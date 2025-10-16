@@ -27,7 +27,7 @@ def check_instance_type(heros : list[Union[Hero, Magician]]) -> None:
 if __name__ == '__main__':
     heros = []
     hero1 = Hero('愛知太郎') # Heroクラスのインスタンスを生成，後に()がついているのは関数呼び出しかクラスインスタンス生成
-    hero2 = Hero(name='愛知花子', hp=150) # 引数名を指定してコンストラクタを呼び出し
+    hero2 = Hero(name='愛知花子', hp=200) # 引数名を指定してコンストラクタを呼び出し
     heros.append(hero1)
     heros.append(hero2)
     print_heros(heros) # ヒーローのリストを表示する関数を呼び出し
@@ -35,19 +35,34 @@ if __name__ == '__main__':
     # クラスメソッドの内，第1引数にselfが書かれているメソッドはインスタンスを作成して初めて呼び出せる
     print(f'hero1のHPは{hero1.getHP()}')
 
-    print(Hero.getDefaultHP()) 
+    # __DEFAULT_HPはPrivate変数なので直接アクセスするとエラーになる(↓の行のコメントを実行してみましょう)
+    # print(Hero.__DEFAULT_HP) # private変数にアクセスできてしまうのであくまでもprivate扱いして欲しい変数
+    # classの外からprivate変数にアクセスしたければアクセサー（get, set)を作ります
+    print(Hero.getDefaultHP()) # static扱いの変数はインスタンス化しなくても実行可能
 
     # グループワーク内容
+    # Heroクラスのインスタンスhero1，hero2を使ってフレーバーテキストを入れながらHPの変化とHero.buf_statusの変化を表示してください
+    # hero1変数には，途中でMagicianクラスのインスタンスを代入してみましょう
+    # heroのHPやMPが変化するようにフレバーテキストを入れて，実装してみましょう
+    # Heroクラスのインスタンスを最後にdelで削除し, HPの値によって表示が変わることを確認してください
     print(f"{hero1.name}は冒険に出発した") # フレーバーテキスト
     print(f"{hero2.name}は{hero1.name}のパーティに合流した") # フレーバーテキスト
     print_heros(heros) # ヒーローのリストを表示する関数を呼び出し
+    
+    print(f"{hero2.name}は落とし穴に落ちてしまった！HPが50減った！")
+    hero2.hp = max(0, hero2.getHP() - 50)
+    print_heros(heros)
+
+    print(f"{hero1.name}はひと休みしたHPが50増えた")
+    hero1.hp = max(0, hero1.getHP() + 50)
+    print_heros(heros)
+
 
     # 例１
     print("Hero全員のHPが下がるトラップ（デバフ）発動") # フレーバーテキスト
-    Hero.buf_status['hp'] = -20 
+    # Hero.buf_status['hp']を変化させると良いのでは？
     print_heros(heros) # ヒーローのリストを表示する関数を呼び出し
 
-    # 転職
     print(f"{hero1.name}は魔法使いに転職した") # フレーバーテキスト
     hero1 = Magician(name=hero1.name, hp=hero1.getHP(), mp=150) # Magicianクラスのインスタンスを生成，hpはgetHP()で取得
     heros[0] = hero1 # herosリストの最初の要素を更新
@@ -56,18 +71,13 @@ if __name__ == '__main__':
 
     # 例２
     print(f"{hero1.name}はHero全員のHPが下がる呪い（デバフ）をうけた") # フレーバーテキスト
-    hero1.buf_status['hp'] = -10
-    print(f'Hero.buf_status = {Hero.buf_status}') # Heroクラスのjob_statusの値を確認
+    # hero1.buf_status['hp']を変化させると良いのでは？
+    # print(f'Hero.buf_status = {Hero.buf_status}') # Heroクラスのjob_statusの値を確認
     print_heros(heros) # ヒーローのリストを表示する関数を呼び出し
 
     # 例３
     print(f"{hero1.name}は罠にかかって味方の{hero2.name}を魔法で攻撃してしまった") # フレーバーテキスト
-    hero1.magic_attack(hero2) # hero1がhero2に魔法攻撃
-    print_heros(heros) # ヒーローのリストを表示する関数を呼び出し
-
-    # 例４
-    print(f"{hero1.name}は{hero2.name}を魔法で回復した") # フレーバーテキスト
-    hero2.buf_status['hp'] = +20  
+    # hero1.magic_attack(hero2) # hero1がhero2に魔法攻撃
     print_heros(heros) # ヒーローのリストを表示する関数を呼び出し
 
     print(f"{hero1.name}と{hero2.name}の今日の冒険はここまで") # フレーバーテキスト
